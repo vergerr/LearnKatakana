@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="ConsoleAppTP20251210">
+      <HintPath>..\..\ConsoleAppTP20251210\ConsoleAppTP20251210\bin\Debug\net10.0\ConsoleAppTP20251210.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
