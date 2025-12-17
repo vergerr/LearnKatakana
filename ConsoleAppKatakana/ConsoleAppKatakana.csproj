@@ -8,8 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Librairies\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="ConsoleAppTP20251210">
-      <HintPath>..\..\ConsoleAppTP20251210\ConsoleAppTP20251210\bin\Debug\net10.0\ConsoleAppTP20251210.dll</HintPath>
+      <HintPath>Librairies\ConsoleAppTP20251210.dll</HintPath>
     </Reference>
   </ItemGroup>
 

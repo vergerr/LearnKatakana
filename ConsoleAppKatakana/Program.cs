@@ -5,37 +5,55 @@ using System.Text;
 
 
 IAsk guess = new AskKatakanaRomaji();
-katakanaToRomaji dic = new katakanaToRomaji();
+Dictionary<string, string> dic;
 Console.OutputEncoding = Encoding.UTF8;
+Console.InputEncoding = Encoding.UTF8;
+string answerAlphabet = string.Empty;
+string answerMode = string.Empty;
 
-Console.WriteLine("Hello my friend ! What's mode do you want ?");
-ShowCommand();
-string answer = Console.ReadLine().ToUpper();
-
-while (!answer.Equals("EXIT"))
+while (!answerAlphabet.Equals("H") && !answerAlphabet.Equals("K"))
 {
-    switch (answer)
+    Console.WriteLine("Hello my friend ! Whish alphabet do you want ?");
+    ShowAlphabet();
+    answerAlphabet = Console.ReadLine().ToUpper();
+}
+dic = answerAlphabet.Equals("H") ? new HiraganaToRomaji().GetDic : new katakanaToRomaji().GetDic;
+answerAlphabet = answerAlphabet.Equals("H") ? "Hiragana" : "Katakana";
+
+Console.WriteLine("Perfect ! Whish mode do you want ?");
+ShowCommand(answerAlphabet);
+answerMode = Console.ReadLine().ToUpper();
+
+while (!answerMode.Equals("EXIT"))
+{
+    switch (answerMode)
     {
-        case "0": guess.GuessRomaji(dic.GetDic);break;
-        case "1": guess.GuessKatakana(dic.GetDic); break;
-        case "2": guess.Study(dic.GetDic); break;
+        case "R": guess.GuessRomaji(dic);break;
+        case "J": guess.GuessJapanAlphabet(dic); break;
+        case "S": guess.Study(dic); break;
         default:
             Console.WriteLine("What ? Remember : ");
-            ShowCommand();
-            answer = Console.ReadLine().ToUpper();
+            ShowCommand(answerAlphabet);
+            answerMode = Console.ReadLine().ToUpper();
             break;
     }
     Console.WriteLine("What's next ?");
-    ShowCommand();
-    answer = Console.ReadLine().ToUpper();
+    ShowCommand(answerAlphabet);
+    answerMode = Console.ReadLine().ToUpper();
 }
 
-void ShowCommand()
+void ShowCommand(string alphabet)
 {
-    Console.WriteLine("0 : guess the Romaji letter");
-    Console.WriteLine("1 : guess the katakana letter");
-    Console.WriteLine("2 : study");
+    Console.WriteLine("R : guess the Romaji letter");
+    Console.WriteLine($"J : guess the {alphabet} letter");
+    Console.WriteLine("S : study");
     Console.WriteLine("EXIT : see you later !");
+}
+
+void ShowAlphabet()
+{
+    Console.WriteLine("H : Hiragana");
+    Console.WriteLine("K : Katakana");
 }
 
 
