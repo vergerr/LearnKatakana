@@ -6,9 +6,9 @@ namespace ConsoleAppKatakana.Interface
 {
     internal interface IAsk
     {
-        void GuessKatakana(Dictionary<string, string> katakanaRomaji);
-        void GuessRomaji(Dictionary<string, string> katakanaRomaji);
-        void Study(Dictionary<string, string> katakanaRomaji);
+        void GuessJapanAlphabet(Dictionary<string, string> alphabetRomaji);
+        void GuessRomaji(Dictionary<string, string> alphabetRomaji);
+        void Study(Dictionary<string, string> alphabetRomaji);
 
         List<KeyValuePair<string, string>> GetRandomDictionary(Dictionary<string, string> dict);
     }

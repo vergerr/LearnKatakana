@@ -22,15 +22,20 @@ namespace ConsoleAppKatakana
             return list;
         }
 
-        public void GuessKatakana(Dictionary<string, string> katakanaRomaji)
+        public void GuessJapanAlphabet(Dictionary<string, string> katakanaRomaji)
         {
             var list = GetRandomDictionary(katakanaRomaji);
-              
-            for(int i = 1; i <= list.Count; i++)
+            var initialList = katakanaRomaji.ToList();
+            string answer;
+            StringBuilder sb = new StringBuilder();
+            initialList.ForEach(s => sb.Append($"{s.Key},"));
+
+            for (int i = 1; i <= list.Count; i++)
             {
                 myConsole.WriteNewLineTitle($"Question n°{i} : Quel est le katakana '{list[i].Value}'");
-                Console.ReadLine();
-                Console.WriteLine($"Answer is : '{list[i].Key}'");
+                Console.WriteLine($"Réponse possible : {sb.ToString()}");
+                answer = Console.ReadLine();
+                Console.WriteLine($"{(answer.Equals(list[i].Key)?"BRAVO ! ":"WRONG ! ")}Answer is : '{list[i].Key}'");
                 Console.ReadLine();
             }
         }
@@ -38,12 +43,13 @@ namespace ConsoleAppKatakana
         public void GuessRomaji(Dictionary<string, string> katakanaRomaji)
         {
             var list = GetRandomDictionary(katakanaRomaji);
+            string answer;
 
             for (int i = 1; i <= list.Count; i++)
             {
                 myConsole.WriteNewLineTitle($"Question n°{i} : Quel est la signification de '{list[i].Key}'");
-                Console.ReadLine();
-                Console.WriteLine($"Answer is : '{list[i].Value}'");
+                answer = Console.ReadLine().ToLower();
+                Console.WriteLine($"{(answer.Equals(list[i].Value) ? "BRAVO ! " : "WRONG ! ")}Answer is : '{list[i].Value}'");
                 Console.ReadLine();
             }
         }
