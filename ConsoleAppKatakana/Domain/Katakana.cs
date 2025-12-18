@@ -5,45 +5,69 @@ using System.Text;
 namespace ConsoleAppKatakana.Domain
 {
     internal static class katakanaToRomaji
-    {
-        static readonly Dictionary<string, string> _dic = new Dictionary<string, string>
 {
-    // Voyelles
-    { "ア", "a" }, { "イ", "i" }, { "ウ", "u" }, { "エ", "e" }, { "オ", "o" },
+        static readonly List<KeyValuePair<string, string>> _dic = new List<KeyValuePair<string, string>>
+{
+    new ("ア", "a"),
+    new ("イ", "i"),
+    new ("ウ", "u"),
+    new ("エ", "e"),
+    new ("オ", "o"),
 
-    // K
-    { "カ", "ka" }, { "キ", "ki" }, { "ク", "ku" }, { "ケ", "ke" }, { "コ", "ko" },
+    new ("カ", "ka"),
+    new ("キ", "ki"),
+    new ("ク", "ku"),
+    new ("ケ", "ke"),
+    new ("コ", "ko"),
 
-    // S
-    { "サ", "sa" }, { "シ", "shi" }, { "ス", "su" }, { "セ", "se" }, { "ソ", "so" },
+    new ("サ", "sa"),
+    new ("シ", "shi"),
+    new ("ス", "su"),
+    new ("セ", "se"),
+    new ("ソ", "so"),
 
-    // T
-    { "タ", "ta" }, { "チ", "chi" }, { "ツ", "tsu" }, { "テ", "te" }, { "ト", "to" },
+    new ("タ", "ta"),
+    new ("チ", "chi"),
+    new ("ツ", "tsu"),
+    new ("テ", "te"),
+    new ("ト", "to"),
 
-    // N
-    { "ナ", "na" }, { "ニ", "ni" }, { "ヌ", "nu" }, { "ネ", "ne" }, { "ノ", "no" },
+    new ("ナ", "na"),
+    new ("ニ", "ni"),
+    new ("ヌ", "nu"),
+    new ("ネ", "ne"),
+    new ("ノ", "no"),
 
-    // H
-    { "ハ", "ha" }, { "ヒ", "hi" }, { "フ", "fu" }, { "ヘ", "he" }, { "ホ", "ho" },
+    new ("ハ", "ha"),
+    new ("ヒ", "hi"),
+    new ("フ", "fu"),
+    new ("ヘ", "he"),
+    new ("ホ", "ho"),
 
-    // M
-    { "マ", "ma" }, { "ミ", "mi" }, { "ム", "mu" }, { "メ", "me" }, { "モ", "mo" },
+    new ("マ", "ma"),
+    new ("ミ", "mi"),
+    new ("ム", "mu"),
+    new ("メ", "me"),
+    new ("モ", "mo"),
 
-    // Y
-    { "ヤ", "ya" }, { "ユ", "yu" }, { "ヨ", "yo" },
+    new ("ヤ", "ya"),
+    new ("ユ", "yu"),
+    new ("ヨ", "yo"),
 
-    // R
-    { "ラ", "ra" }, { "リ", "ri" }, { "ル", "ru" }, { "レ", "re" }, { "ロ", "ro" },
+    new ("ラ", "ra"),
+    new ("リ", "ri"),
+    new ("ル", "ru"),
+    new ("レ", "re"),
+    new ("ロ", "ro"),
 
-    // W + N
-    { "ワ", "wa" }, { "ヲ", "wo" }, { "ン", "n" }
+    new ("ワ", "wa"),
+    new ("ヲ", "wo"),
+    new ("ン", "n")
 };
-        public static Dictionary<string, string> GetDic
+        public static List<KeyValuePair<string, string>> Dic
         {
-            get
-            {
-                return _dic;
-            }
+            get => _dic;
         }
     }
 }
+

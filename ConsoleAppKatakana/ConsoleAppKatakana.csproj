@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Export20251218.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Librairies\" />
   </ItemGroup>
 

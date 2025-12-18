@@ -5,61 +5,58 @@ using System.Text;
 
 namespace ConsoleAppKatakana
 {
-    internal class AskKatakanaRomaji : IAsk
+    internal class AskService : IAsk
     {
         ConsoleAppTP20251210.Interface.IEditConsole _myConsole;
 
-        public AskKatakanaRomaji(ConsoleAppTP20251210.Interface.IEditConsole editConsole)
+        public AskService(ConsoleAppTP20251210.Interface.IEditConsole editConsole)
         {
             _myConsole = editConsole;
         }
 
-        public List<KeyValuePair<string, string>> GetRandomDictionary(Dictionary<string, string> dict)
+        private List<KeyValuePair<string, string>> GetRandomDictionary(List<KeyValuePair<string, string>> listAlphabet)
         {
-            var list = dict.ToList();
-
             var rng = Random.Shared;
-            for (int i = list.Count - 1; i > 0; i--)
+            for (int i = listAlphabet.Count - 1; i > 0; i--)
             {
                 int j = rng.Next(i + 1);
-                (list[i], list[j]) = (list[j], list[i]);
+                (listAlphabet[i], listAlphabet[j]) = (listAlphabet[j], listAlphabet[i]);
             }
-            return list;
+            return listAlphabet;
         }
 
-        public void GuessJapanAlphabet(Dictionary<string, string> katakanaRomaji)
+        public void GuessJapanAlphabet(List<KeyValuePair<string, string>> listAlphabet)
         {
-            var list = GetRandomDictionary(katakanaRomaji);
-            var initialList = katakanaRomaji.ToList();
+            var listAlphabetRandom = GetRandomDictionary(listAlphabet);
             string answer;
             StringBuilder sb = new StringBuilder();
-            initialList.ForEach(s => sb.Append($"{s.Key},"));
+            listAlphabet.ForEach(s => sb.Append($"{s.Key},"));
 
-            for (int i = 1; i <= list.Count; i++)
+            for (int i = 1; i <= listAlphabetRandom.Count; i++)
             {
-                _myConsole.WriteNewLineTitle($"Question n°{i} : Quel est le katakana '{list[i].Value}'");
+                _myConsole.WriteNewLineTitle($"Question n°{i} : Quel est le katakana '{listAlphabetRandom[i].Value}'");
                 Console.WriteLine($"Réponse possible : {sb.ToString()}");
                 answer = Console.ReadLine();
-                Console.WriteLine($"{(answer.Equals(list[i].Key)?"BRAVO ! ":"WRONG ! ")}Answer is : '{list[i].Key}'");
+                Console.WriteLine($"{(answer.Equals(listAlphabetRandom[i].Key)?"BRAVO ! ":"WRONG ! ")}Answer is : '{listAlphabetRandom[i].Key}'");
                 Console.ReadLine();
             }
         }
 
-        public void GuessRomaji(Dictionary<string, string> katakanaRomaji)
+        public void GuessRomaji(List<KeyValuePair<string, string>> listAlphabet)
         {
-            var list = GetRandomDictionary(katakanaRomaji);
+            var listAlphabetRandom = GetRandomDictionary(listAlphabet);
             string answer;
 
-            for (int i = 1; i <= list.Count; i++)
+            for (int i = 1; i <= listAlphabetRandom.Count; i++)
             {
-                _myConsole.WriteNewLineTitle($"Question n°{i} : Quel est la signification de '{list[i].Key}'");
+                _myConsole.WriteNewLineTitle($"Question n°{i} : Quel est la signification de '{listAlphabetRandom[i].Key}'");
                 answer = Console.ReadLine().ToLower();
-                Console.WriteLine($"{(answer.Equals(list[i].Value) ? "BRAVO ! " : "WRONG ! ")}Answer is : '{list[i].Value}'");
+                Console.WriteLine($"{(answer.Equals(listAlphabetRandom[i].Value) ? "BRAVO ! " : "WRONG ! ")}Answer is : '{listAlphabetRandom[i].Value}'");
                 Console.ReadLine();
             }
         }
 
-        public void Study(Dictionary<string, string> katakanaRomaji)
+        public void Study(List<KeyValuePair<string, string>> katakanaRomaji)
         {
             const int newLine = 5;
             int countItem = 0;

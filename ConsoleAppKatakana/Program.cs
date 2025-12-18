@@ -4,8 +4,8 @@ using ConsoleAppKatakana.Interface;
 using System.Text;
 
 
-IAsk guess = new AskKatakanaRomaji(new ConsoleAppTP20251210.EditConsole());
-ValidCommandUser commandUser = new ValidCommandUser();
+IAsk askService = new AskService(new ConsoleAppTP20251210.EditConsole());
+ValidCommandUser commandUser = new ValidCommandUser(askService);
 
 Console.OutputEncoding = Encoding.UTF8;
 Console.InputEncoding = Encoding.UTF8;
@@ -18,25 +18,17 @@ while (!commandUser.IsCommandAlphabetCorrect)
 }
 
 Console.WriteLine("Perfect ! Whish mode do you want ?");
-ShowCommand(commandUser.NameAlphabet);
-commandUser.CommandMode = Console.ReadLine();
 
 while (!commandUser.CommandMode.Equals("EXIT"))
 {
-    switch (commandUser.CommandMode)
+    do
     {
-        case "R": guess.GuessRomaji(commandUser.DictionaryAlphabet);break;
-        case "J": guess.GuessJapanAlphabet(commandUser.DictionaryAlphabet); break;
-        case "S": guess.Study(commandUser.DictionaryAlphabet); break;
-        default:
-            Console.WriteLine("What ? Remember : ");
-            ShowCommand(commandUser.NameAlphabet);
-            commandUser.CommandMode = Console.ReadLine();
-            break;
+        ShowCommand(commandUser.NameAlphabet);
+        commandUser.CommandMode = Console.ReadLine();
     }
-    Console.WriteLine("What's next ?");
-    ShowCommand(commandUser.NameAlphabet);
-    commandUser.CommandMode = Console.ReadLine();
+    while (!commandUser.IsCommandModeCorrect);
+
+    commandUser.CallAskService();
 }
 
 void ShowCommand(string alphabet)
@@ -49,12 +41,14 @@ void ShowCommand(string alphabet)
 
 void ShowAlphabet()
 {
-    Console.WriteLine("H : Hiragana");
-    Console.WriteLine("K : Katakana");
+    foreach (KeyValuePair<string, string> kvp in Command._commandAlphabetAccept)
+    {
+        Console.WriteLine($"{kvp.Key} : {kvp.Value}");
+    }
 }
 
 
 
 
-        
+
 

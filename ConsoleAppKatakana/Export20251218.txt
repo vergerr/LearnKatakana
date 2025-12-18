@@ -1,0 +1,439 @@
+===== C:\Users\rverger\source\repos\ConsoleAppKatakana\ConsoleAppKatakana\AskKatakanaRomaji.cs =====
+
+using ConsoleAppKatakana.Interface;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ConsoleAppKatakana
+{
+    internal class AskService : IAsk
+    {
+        ConsoleAppTP20251210.Interface.IEditConsole _myConsole;
+
+        public AskService(ConsoleAppTP20251210.Interface.IEditConsole editConsole)
+        {
+            _myConsole = editConsole;
+        }
+
+        private List<KeyValuePair<string, string>> GetRandomDictionary(List<KeyValuePair<string, string>> listAlphabet)
+        {
+            var rng = Random.Shared;
+            for (int i = listAlphabet.Count - 1; i > 0; i--)
+            {
+                int j = rng.Next(i + 1);
+                (listAlphabet[i], listAlphabet[j]) = (listAlphabet[j], listAlphabet[i]);
+            }
+            return listAlphabet;
+        }
+
+        public void GuessJapanAlphabet(List<KeyValuePair<string, string>> listAlphabet)
+        {
+            var listAlphabetRandom = GetRandomDictionary(listAlphabet);
+            string answer;
+            StringBuilder sb = new StringBuilder();
+            listAlphabet.ForEach(s => sb.Append($"{s.Key},"));
+
+            for (int i = 1; i <= listAlphabetRandom.Count; i++)
+            {
+                _myConsole.WriteNewLineTitle($"Question n�{i} : Quel est le katakana '{listAlphabetRandom[i].Value}'");
+                Console.WriteLine($"R�ponse possible : {sb.ToString()}");
+                answer = Console.ReadLine();
+                Console.WriteLine($"{(answer.Equals(listAlphabetRandom[i].Key)?"BRAVO ! ":"WRONG ! ")}Answer is : '{listAlphabetRandom[i].Key}'");
+                Console.ReadLine();
+            }
+        }
+
+        public void GuessRomaji(List<KeyValuePair<string, string>> listAlphabet)
+        {
+            var listAlphabetRandom = GetRandomDictionary(listAlphabet);
+            string answer;
+
+            for (int i = 1; i <= listAlphabetRandom.Count; i++)
+            {
+                _myConsole.WriteNewLineTitle($"Question n�{i} : Quel est la signification de '{listAlphabetRandom[i].Key}'");
+                answer = Console.ReadLine().ToLower();
+                Console.WriteLine($"{(answer.Equals(listAlphabetRandom[i].Value) ? "BRAVO ! " : "WRONG ! ")}Answer is : '{listAlphabetRandom[i].Value}'");
+                Console.ReadLine();
+            }
+        }
+
+        public void Study(List<KeyValuePair<string, string>> katakanaRomaji)
+        {
+            const int newLine = 5;
+            int countItem = 0;
+            _myConsole.WriteNewLineTitle("Study");
+            foreach (KeyValuePair<string, string> kvp in katakanaRomaji)
+            {
+                countItem++;
+                Console.Write($"{kvp.Value} = {kvp.Key}{(countItem < newLine ? ",":"")}");
+                if (countItem == newLine)
+                {
+                    countItem = 0;
+                    Console.WriteLine();
+                }
+            }
+            Console.ReadLine();
+        }
+    }
+}
+
+
+===== C:\Users\rverger\source\repos\ConsoleAppKatakana\ConsoleAppKatakana\Program.cs =====
+
+using ConsoleAppKatakana;
+using ConsoleAppKatakana.Domain;
+using ConsoleAppKatakana.Interface;
+using System.Text;
+
+
+IAsk askService = new AskService(new ConsoleAppTP20251210.EditConsole());
+ValidCommandUser commandUser = new ValidCommandUser(askService);
+
+Console.OutputEncoding = Encoding.UTF8;
+Console.InputEncoding = Encoding.UTF8;
+
+while (!commandUser.IsCommandAlphabetCorrect)
+{
+    Console.WriteLine("Hello my friend ! Whish alphabet do you want ?");
+    ShowAlphabet();
+    commandUser.CommandAlphabet = Console.ReadLine();
+}
+
+Console.WriteLine("Perfect ! Whish mode do you want ?");
+
+while (!commandUser.CommandMode.Equals("EXIT"))
+{
+    do
+    {
+        ShowCommand(commandUser.NameAlphabet);
+        commandUser.CommandMode = Console.ReadLine();
+    }
+    while (!commandUser.IsCommandModeCorrect);
+
+    commandUser.CallAskService();
+}
+
+void ShowCommand(string alphabet)
+{
+    Console.WriteLine("R : guess the Romaji letter");
+    Console.WriteLine($"J : guess the {alphabet} letter");
+    Console.WriteLine("S : study");
+    Console.WriteLine("EXIT : see you later !");
+}
+
+void ShowAlphabet()
+{
+    foreach (KeyValuePair<string, string> kvp in Command._commandAlphabetAccept)
+    {
+        Console.WriteLine($"{kvp.Key} : {kvp.Value}");
+    }
+}
+
+
+
+
+
+
+
+
+===== C:\Users\rverger\source\repos\ConsoleAppKatakana\ConsoleAppKatakana\ValidCommandUser.cs =====
+
+using ConsoleAppKatakana.Domain;
+using ConsoleAppKatakana.Interface;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace ConsoleAppKatakana
+{
+    internal class ValidCommandUser
+    {
+        public ValidCommandUser(IAsk serviceAsk)
+        {
+            ServiceAsk = serviceAsk;
+        }
+
+        static string _commandAlphabet = string.Empty;
+        public string CommandAlphabet
+        {
+            get => _commandAlphabet;
+            set => _commandAlphabet = value.ToUpper();
+        }
+
+        static string _commandMode = string.Empty;
+        public string CommandMode { get => _commandMode; set => _commandMode = value.ToUpper(); }
+
+        private IAsk ServiceAsk;
+
+        public bool IsCommandAlphabetCorrect
+        {
+            get => Command._commandAlphabetAccept.ContainsKey(CommandAlphabet);
+        }
+        public bool IsCommandModeCorrect
+        {
+            get => Command._commandModeAccept.Contains(CommandMode);
+        }
+        public string NameAlphabet
+        {
+            get => Command._commandAlphabetAccept[CommandAlphabet];
+        }
+        private List<KeyValuePair<string, string>> DictionaryAlphabet
+        {
+            get => CommandAlphabet switch { "H" => HiraganaToRomaji.Dic, "K" => katakanaToRomaji.Dic, _ => throw new InvalidOperationException("Alphabet no valid") };
+        }
+
+        public void CallAskService()
+        {
+            switch (_commandMode)
+            {
+                case "R": ServiceAsk.GuessRomaji(DictionaryAlphabet); break;
+                case "J": ServiceAsk.GuessJapanAlphabet(DictionaryAlphabet); break;
+                case "S": ServiceAsk.Study(DictionaryAlphabet); break;
+                case "EXIT": break;
+                default: throw new InvalidOperationException("No mode found");
+            }
+            ;
+        }
+    }
+}
+
+
+===== C:\Users\rverger\source\repos\ConsoleAppKatakana\ConsoleAppKatakana\Domain\Command.cs =====
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ConsoleAppKatakana.Domain
+{
+    internal static class Command
+    {
+        public static readonly Dictionary<string, string> _commandAlphabetAccept = new Dictionary<string, string>()
+        {
+            ["H"] = "Hiragana",
+            ["K"] = "Katakana"
+        };
+        public static readonly HashSet<string> _commandModeAccept = ["R", "J", "S", "EXIT"];
+    }
+}
+
+
+===== C:\Users\rverger\source\repos\ConsoleAppKatakana\ConsoleAppKatakana\Domain\Hiragana.cs =====
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ConsoleAppKatakana.Domain
+{
+    internal static class HiraganaToRomaji
+{
+        static readonly List<KeyValuePair<string, string>> _dic = new List<KeyValuePair<string, string>>
+{
+    new("?", "a"),
+    new("?", "i"),
+    new("?", "u"),
+    new("?", "e"),
+    new("?", "o"),
+
+    new("?", "ka"),
+    new("?", "ki"),
+    new("?", "ku"),
+    new("?", "ke"),
+    new("?", "ko"),
+
+    new("?", "sa"),
+    new("?", "shi"),
+    new("?", "su"),
+    new("?", "se"),
+    new("?", "so"),
+
+    new("?", "ta"),
+    new("?", "chi"),
+    new("?", "tsu"),
+    new("?", "te"),
+    new("?", "to"),
+
+    new("?", "na"),
+    new("?", "ni"),
+    new("?", "nu"),
+    new("?", "ne"),
+    new("?", "no"),
+
+    new("?", "ha"),
+    new("?", "hi"),
+    new("?", "fu"),
+    new("?", "he"),
+    new("?", "ho"),
+
+    new("?", "ma"),
+    new("?", "mi"),
+    new("?", "mu"),
+    new("?", "me"),
+    new("?", "mo"),
+
+    new("?", "ya"),
+    new("?", "yu"),
+    new("?", "yo"),
+
+    new("?", "ra"),
+    new("?", "ri"),
+    new("?", "ru"),
+    new("?", "re"),
+    new("?", "ro"),
+
+    new("?", "wa"),
+    new("?", "wo"),
+    new("?", "n")
+};
+        public static List<KeyValuePair<string, string>> Dic
+        {
+            get => _dic;
+        }
+    }
+}
+
+
+===== C:\Users\rverger\source\repos\ConsoleAppKatakana\ConsoleAppKatakana\Domain\Katakana.cs =====
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ConsoleAppKatakana.Domain
+{
+    internal static class katakanaToRomaji
+{
+        static readonly List<KeyValuePair<string, string>> _dic = new List<KeyValuePair<string, string>>
+{
+    new ("?", "a"),
+    new ("?", "i"),
+    new ("?", "u"),
+    new ("?", "e"),
+    new ("?", "o"),
+
+    new ("?", "ka"),
+    new ("?", "ki"),
+    new ("?", "ku"),
+    new ("?", "ke"),
+    new ("?", "ko"),
+
+    new ("?", "sa"),
+    new ("?", "shi"),
+    new ("?", "su"),
+    new ("?", "se"),
+    new ("?", "so"),
+
+    new ("?", "ta"),
+    new ("?", "chi"),
+    new ("?", "tsu"),
+    new ("?", "te"),
+    new ("?", "to"),
+
+    new ("?", "na"),
+    new ("?", "ni"),
+    new ("?", "nu"),
+    new ("?", "ne"),
+    new ("?", "no"),
+
+    new ("?", "ha"),
+    new ("?", "hi"),
+    new ("?", "fu"),
+    new ("?", "he"),
+    new ("?", "ho"),
+
+    new ("?", "ma"),
+    new ("?", "mi"),
+    new ("?", "mu"),
+    new ("?", "me"),
+    new ("?", "mo"),
+
+    new ("?", "ya"),
+    new ("?", "yu"),
+    new ("?", "yo"),
+
+    new ("?", "ra"),
+    new ("?", "ri"),
+    new ("?", "ru"),
+    new ("?", "re"),
+    new ("?", "ro"),
+
+    new ("?", "wa"),
+    new ("?", "wo"),
+    new ("?", "n")
+};
+        public static List<KeyValuePair<string, string>> Dic
+        {
+            get => _dic;
+        }
+    }
+}
+
+
+
+===== C:\Users\rverger\source\repos\ConsoleAppKatakana\ConsoleAppKatakana\Interface\IAsk.cs =====
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ConsoleAppKatakana.Interface
+{
+    internal interface IAsk
+    {
+        void GuessJapanAlphabet(List<KeyValuePair<string, string>> alphabetRomaji);
+        void GuessRomaji(List<KeyValuePair<string, string>> alphabetRomaji);
+        void Study(List<KeyValuePair<string, string>> alphabetRomaji);
+    }
+}
+
+
+===== C:\Users\rverger\source\repos\ConsoleAppKatakana\ConsoleAppKatakana\obj\Debug\net10.0\.NETCoreApp,Version=v10.0.AssemblyAttributes.cs =====
+
+// <autogenerated />
+using System;
+using System.Reflection;
+[assembly: global::System.Runtime.Versioning.TargetFrameworkAttribute(".NETCoreApp,Version=v10.0", FrameworkDisplayName = ".NET 10.0")]
+
+
+===== C:\Users\rverger\source\repos\ConsoleAppKatakana\ConsoleAppKatakana\obj\Debug\net10.0\ConsoleAppKatakana.AssemblyInfo.cs =====
+
+//------------------------------------------------------------------------------
+// <auto-generated>
+//     Ce code a été généré par un outil.
+//     Version du runtime :4.0.30319.42000
+//
+//     Les modifications apportées à ce fichier peuvent provoquer un comportement incorrect et seront perdues si
+//     le code est régénéré.
+// </auto-generated>
+//------------------------------------------------------------------------------
+
+using System;
+using System.Reflection;
+
+[assembly: System.Reflection.AssemblyCompanyAttribute("ConsoleAppKatakana")]
+[assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5d5c39e7e68bf0887e96abfb77a368dec3e1b75e")]
+[assembly: System.Reflection.AssemblyProductAttribute("ConsoleAppKatakana")]
+[assembly: System.Reflection.AssemblyTitleAttribute("ConsoleAppKatakana")]
+[assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
+
+// Généré par la classe MSBuild WriteCodeFragment.
+
+
+
+===== C:\Users\rverger\source\repos\ConsoleAppKatakana\ConsoleAppKatakana\obj\Debug\net10.0\ConsoleAppKatakana.GlobalUsings.g.cs =====
+
+// <auto-generated/>
+global using System;
+global using System.Collections.Generic;
+global using System.IO;
+global using System.Linq;
+global using System.Net.Http;
+global using System.Threading;
+global using System.Threading.Tasks;
+
+
