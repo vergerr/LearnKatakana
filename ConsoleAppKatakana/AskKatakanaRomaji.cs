@@ -7,7 +7,12 @@ namespace ConsoleAppKatakana
 {
     internal class AskKatakanaRomaji : IAsk
     {
-        ConsoleAppTP20251210.Interface.IEditConsole myConsole = new ConsoleAppTP20251210.EditConsole();
+        ConsoleAppTP20251210.Interface.IEditConsole _myConsole;
+
+        public AskKatakanaRomaji(ConsoleAppTP20251210.Interface.IEditConsole editConsole)
+        {
+            _myConsole = editConsole;
+        }
 
         public List<KeyValuePair<string, string>> GetRandomDictionary(Dictionary<string, string> dict)
         {
@@ -32,7 +37,7 @@ namespace ConsoleAppKatakana
 
             for (int i = 1; i <= list.Count; i++)
             {
-                myConsole.WriteNewLineTitle($"Question n°{i} : Quel est le katakana '{list[i].Value}'");
+                _myConsole.WriteNewLineTitle($"Question n°{i} : Quel est le katakana '{list[i].Value}'");
                 Console.WriteLine($"Réponse possible : {sb.ToString()}");
                 answer = Console.ReadLine();
                 Console.WriteLine($"{(answer.Equals(list[i].Key)?"BRAVO ! ":"WRONG ! ")}Answer is : '{list[i].Key}'");
@@ -47,7 +52,7 @@ namespace ConsoleAppKatakana
 
             for (int i = 1; i <= list.Count; i++)
             {
-                myConsole.WriteNewLineTitle($"Question n°{i} : Quel est la signification de '{list[i].Key}'");
+                _myConsole.WriteNewLineTitle($"Question n°{i} : Quel est la signification de '{list[i].Key}'");
                 answer = Console.ReadLine().ToLower();
                 Console.WriteLine($"{(answer.Equals(list[i].Value) ? "BRAVO ! " : "WRONG ! ")}Answer is : '{list[i].Value}'");
                 Console.ReadLine();
@@ -58,7 +63,7 @@ namespace ConsoleAppKatakana
         {
             const int newLine = 5;
             int countItem = 0;
-            myConsole.WriteNewLineTitle("Study");
+            _myConsole.WriteNewLineTitle("Study");
             foreach (KeyValuePair<string, string> kvp in katakanaRomaji)
             {
                 countItem++;

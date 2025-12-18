@@ -4,9 +4,9 @@ using System.Text;
 
 namespace ConsoleAppKatakana.Domain
 {
-    internal class HiraganaToRomaji
+    internal static class HiraganaToRomaji
     {
-        readonly Dictionary<string, string> _dic = new Dictionary<string, string>
+        static readonly Dictionary<string, string> _dic = new Dictionary<string, string>
 {
     // Voyelles
     { "あ", "a" }, { "い", "i" }, { "う", "u" }, { "え", "e" }, { "お", "o" },
@@ -38,7 +38,7 @@ namespace ConsoleAppKatakana.Domain
     // W + N
     { "わ", "wa" }, { "を", "wo" }, { "ん", "n" }
 };
-        public Dictionary<string, string> GetDic
+        public static Dictionary<string, string> GetDic
         {
             get
             {

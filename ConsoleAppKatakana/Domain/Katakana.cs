@@ -4,9 +4,9 @@ using System.Text;
 
 namespace ConsoleAppKatakana.Domain
 {
-    internal class katakanaToRomaji
+    internal static class katakanaToRomaji
     {
-        readonly Dictionary<string, string> _dic = new Dictionary<string, string>
+        static readonly Dictionary<string, string> _dic = new Dictionary<string, string>
 {
     // Voyelles
     { "ア", "a" }, { "イ", "i" }, { "ウ", "u" }, { "エ", "e" }, { "オ", "o" },
@@ -38,10 +38,12 @@ namespace ConsoleAppKatakana.Domain
     // W + N
     { "ワ", "wa" }, { "ヲ", "wo" }, { "ン", "n" }
 };
-        public Dictionary<string, string> GetDic { get
+        public static Dictionary<string, string> GetDic
+        {
+            get
             {
                 return _dic;
-            } 
+            }
         }
     }
 }

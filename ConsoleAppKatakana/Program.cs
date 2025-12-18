@@ -4,42 +4,39 @@ using ConsoleAppKatakana.Interface;
 using System.Text;
 
 
-IAsk guess = new AskKatakanaRomaji();
-Dictionary<string, string> dic;
+IAsk guess = new AskKatakanaRomaji(new ConsoleAppTP20251210.EditConsole());
+ValidCommandUser commandUser = new ValidCommandUser();
+
 Console.OutputEncoding = Encoding.UTF8;
 Console.InputEncoding = Encoding.UTF8;
-string answerAlphabet = string.Empty;
-string answerMode = string.Empty;
 
-while (!answerAlphabet.Equals("H") && !answerAlphabet.Equals("K"))
+while (!commandUser.IsCommandAlphabetCorrect)
 {
     Console.WriteLine("Hello my friend ! Whish alphabet do you want ?");
     ShowAlphabet();
-    answerAlphabet = Console.ReadLine().ToUpper();
+    commandUser.CommandAlphabet = Console.ReadLine();
 }
-dic = answerAlphabet.Equals("H") ? new HiraganaToRomaji().GetDic : new katakanaToRomaji().GetDic;
-answerAlphabet = answerAlphabet.Equals("H") ? "Hiragana" : "Katakana";
 
 Console.WriteLine("Perfect ! Whish mode do you want ?");
-ShowCommand(answerAlphabet);
-answerMode = Console.ReadLine().ToUpper();
+ShowCommand(commandUser.NameAlphabet);
+commandUser.CommandMode = Console.ReadLine();
 
-while (!answerMode.Equals("EXIT"))
+while (!commandUser.CommandMode.Equals("EXIT"))
 {
-    switch (answerMode)
+    switch (commandUser.CommandMode)
     {
-        case "R": guess.GuessRomaji(dic);break;
-        case "J": guess.GuessJapanAlphabet(dic); break;
-        case "S": guess.Study(dic); break;
+        case "R": guess.GuessRomaji(commandUser.DictionaryAlphabet);break;
+        case "J": guess.GuessJapanAlphabet(commandUser.DictionaryAlphabet); break;
+        case "S": guess.Study(commandUser.DictionaryAlphabet); break;
         default:
             Console.WriteLine("What ? Remember : ");
-            ShowCommand(answerAlphabet);
-            answerMode = Console.ReadLine().ToUpper();
+            ShowCommand(commandUser.NameAlphabet);
+            commandUser.CommandMode = Console.ReadLine();
             break;
     }
     Console.WriteLine("What's next ?");
-    ShowCommand(answerAlphabet);
-    answerMode = Console.ReadLine().ToUpper();
+    ShowCommand(commandUser.NameAlphabet);
+    commandUser.CommandMode = Console.ReadLine();
 }
 
 void ShowCommand(string alphabet)
