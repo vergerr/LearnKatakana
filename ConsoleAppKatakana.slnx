@@ -1,3 +1,5 @@
 <Solution>
+  <Folder Name="/Éléments de solution/" />
+  <Project Path="ConsoleAppKatakana.Tests/ConsoleAppKatakana.Tests.csproj" />
   <Project Path="ConsoleAppKatakana/ConsoleAppKatakana.csproj" />
 </Solution>

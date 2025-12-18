@@ -4,42 +4,32 @@ using ConsoleAppKatakana.Interface;
 using System.Text;
 
 
-IAsk guess = new AskKatakanaRomaji();
-Dictionary<string, string> dic;
+IAsk askService = new AskService(new ConsoleAppTP20251210.EditConsole());
+CommandUser commandUser = new CommandUser();
+ValidCommandUser validCommandUser = new ValidCommandUser(askService, commandUser);
+
 Console.OutputEncoding = Encoding.UTF8;
 Console.InputEncoding = Encoding.UTF8;
-string answerAlphabet = string.Empty;
-string answerMode = string.Empty;
 
-while (!answerAlphabet.Equals("H") && !answerAlphabet.Equals("K"))
+while (!validCommandUser.IsCommandAlphabetCorrect)
 {
     Console.WriteLine("Hello my friend ! Whish alphabet do you want ?");
     ShowAlphabet();
-    answerAlphabet = Console.ReadLine().ToUpper();
+    commandUser.CommandAlphabet = Console.ReadLine();
 }
-dic = answerAlphabet.Equals("H") ? new HiraganaToRomaji().GetDic : new katakanaToRomaji().GetDic;
-answerAlphabet = answerAlphabet.Equals("H") ? "Hiragana" : "Katakana";
 
 Console.WriteLine("Perfect ! Whish mode do you want ?");
-ShowCommand(answerAlphabet);
-answerMode = Console.ReadLine().ToUpper();
 
-while (!answerMode.Equals("EXIT"))
+while (!commandUser.CommandMode.Equals("EXIT"))
 {
-    switch (answerMode)
+    do
     {
-        case "R": guess.GuessRomaji(dic);break;
-        case "J": guess.GuessJapanAlphabet(dic); break;
-        case "S": guess.Study(dic); break;
-        default:
-            Console.WriteLine("What ? Remember : ");
-            ShowCommand(answerAlphabet);
-            answerMode = Console.ReadLine().ToUpper();
-            break;
+        ShowCommand(validCommandUser.NameAlphabet);
+        commandUser.CommandMode = Console.ReadLine();
     }
-    Console.WriteLine("What's next ?");
-    ShowCommand(answerAlphabet);
-    answerMode = Console.ReadLine().ToUpper();
+    while (!validCommandUser.IsCommandModeCorrect);
+
+    validCommandUser.CallAskService();
 }
 
 void ShowCommand(string alphabet)
@@ -52,12 +42,14 @@ void ShowCommand(string alphabet)
 
 void ShowAlphabet()
 {
-    Console.WriteLine("H : Hiragana");
-    Console.WriteLine("K : Katakana");
+    foreach (KeyValuePair<string, string> kvp in Command._commandAlphabetAccept)
+    {
+        Console.WriteLine($"{kvp.Key} : {kvp.Value}");
+    }
 }
 
 
 
 
-        
+
 

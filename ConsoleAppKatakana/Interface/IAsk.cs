@@ -4,12 +4,10 @@ using System.Text;
 
 namespace ConsoleAppKatakana.Interface
 {
-    internal interface IAsk
+    public interface IAsk
     {
-        void GuessJapanAlphabet(Dictionary<string, string> alphabetRomaji);
-        void GuessRomaji(Dictionary<string, string> alphabetRomaji);
-        void Study(Dictionary<string, string> alphabetRomaji);
-
-        List<KeyValuePair<string, string>> GetRandomDictionary(Dictionary<string, string> dict);
+        void GuessJapanAlphabet(IReadOnlyList<KeyValuePair<string, string>> alphabetRomaji);
+        void GuessRomaji(IReadOnlyList<KeyValuePair<string, string>> alphabetRomaji);
+        void Study(IReadOnlyList<KeyValuePair<string, string>> alphabetRomaji);
     }
 }
