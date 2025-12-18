@@ -14,25 +14,30 @@ namespace ConsoleAppKatakana
             _myConsole = editConsole;
         }
 
-        private List<KeyValuePair<string, string>> GetRandomDictionary(List<KeyValuePair<string, string>> listAlphabet)
+        private List<KeyValuePair<string, string>> GetRandomDictionary(IReadOnlyList<KeyValuePair<string, string>> listAlphabet)
         {
             var rng = Random.Shared;
-            for (int i = listAlphabet.Count - 1; i > 0; i--)
+            List<KeyValuePair<string, string>> listRandom = new List<KeyValuePair<string, string>>(listAlphabet);
+            
+            for (int i = listRandom.Count - 1; i > 0; i--)
             {
                 int j = rng.Next(i + 1);
-                (listAlphabet[i], listAlphabet[j]) = (listAlphabet[j], listAlphabet[i]);
+                (listRandom[i], listRandom[j]) = (listRandom[j], listRandom[i]);
             }
-            return listAlphabet;
+            return listRandom;
         }
 
-        public void GuessJapanAlphabet(List<KeyValuePair<string, string>> listAlphabet)
+        public void GuessJapanAlphabet(IReadOnlyList<KeyValuePair<string, string>> listAlphabet)
         {
             var listAlphabetRandom = GetRandomDictionary(listAlphabet);
             string answer;
             StringBuilder sb = new StringBuilder();
-            listAlphabet.ForEach(s => sb.Append($"{s.Key},"));
+            foreach(KeyValuePair<string, string> kvp in listAlphabet)
+            {
+                sb.Append($"{kvp.Key},");
+            }
 
-            for (int i = 1; i <= listAlphabetRandom.Count; i++)
+            for (int i = 0; i < listAlphabetRandom.Count; i++)
             {
                 _myConsole.WriteNewLineTitle($"Question n°{i} : Quel est le katakana '{listAlphabetRandom[i].Value}'");
                 Console.WriteLine($"Réponse possible : {sb.ToString()}");
@@ -42,12 +47,12 @@ namespace ConsoleAppKatakana
             }
         }
 
-        public void GuessRomaji(List<KeyValuePair<string, string>> listAlphabet)
+        public void GuessRomaji(IReadOnlyList<KeyValuePair<string, string>> listAlphabet)
         {
             var listAlphabetRandom = GetRandomDictionary(listAlphabet);
             string answer;
 
-            for (int i = 1; i <= listAlphabetRandom.Count; i++)
+            for (int i = 0; i < listAlphabetRandom.Count; i++)
             {
                 _myConsole.WriteNewLineTitle($"Question n°{i} : Quel est la signification de '{listAlphabetRandom[i].Key}'");
                 answer = Console.ReadLine().ToLower();
@@ -56,7 +61,7 @@ namespace ConsoleAppKatakana
             }
         }
 
-        public void Study(List<KeyValuePair<string, string>> katakanaRomaji)
+        public void Study(IReadOnlyList<KeyValuePair<string, string>> katakanaRomaji)
         {
             const int newLine = 5;
             int countItem = 0;
@@ -71,7 +76,6 @@ namespace ConsoleAppKatakana
                     Console.WriteLine();
                 }
             }
-            Console.ReadLine();
         }
     }
 }

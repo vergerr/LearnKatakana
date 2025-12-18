@@ -5,12 +5,13 @@ using System.Text;
 
 
 IAsk askService = new AskService(new ConsoleAppTP20251210.EditConsole());
-ValidCommandUser commandUser = new ValidCommandUser(askService);
+CommandUser commandUser = new CommandUser();
+ValidCommandUser validCommandUser = new ValidCommandUser(askService, commandUser);
 
 Console.OutputEncoding = Encoding.UTF8;
 Console.InputEncoding = Encoding.UTF8;
 
-while (!commandUser.IsCommandAlphabetCorrect)
+while (!validCommandUser.IsCommandAlphabetCorrect)
 {
     Console.WriteLine("Hello my friend ! Whish alphabet do you want ?");
     ShowAlphabet();
@@ -23,12 +24,12 @@ while (!commandUser.CommandMode.Equals("EXIT"))
 {
     do
     {
-        ShowCommand(commandUser.NameAlphabet);
+        ShowCommand(validCommandUser.NameAlphabet);
         commandUser.CommandMode = Console.ReadLine();
     }
-    while (!commandUser.IsCommandModeCorrect);
+    while (!validCommandUser.IsCommandModeCorrect);
 
-    commandUser.CallAskService();
+    validCommandUser.CallAskService();
 }
 
 void ShowCommand(string alphabet)

@@ -64,7 +64,7 @@ namespace ConsoleAppKatakana.Domain
     new ("ヲ", "wo"),
     new ("ン", "n")
 };
-        public static List<KeyValuePair<string, string>> Dic
+        public static IReadOnlyList<KeyValuePair<string, string>> Dic
         {
             get => _dic;
         }

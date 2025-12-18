@@ -9,43 +9,35 @@ namespace ConsoleAppKatakana
 {
     internal class ValidCommandUser
     {
-        public ValidCommandUser(IAsk serviceAsk)
+        public ValidCommandUser(IAsk serviceAsk, CommandUser commandUser)
         {
             ServiceAsk = serviceAsk;
+            CommandUser = commandUser;
         }
-
-        static string _commandAlphabet = string.Empty;
-        public string CommandAlphabet
-        {
-            get => _commandAlphabet;
-            set => _commandAlphabet = value.ToUpper();
-        }
-
-        static string _commandMode = string.Empty;
-        public string CommandMode { get => _commandMode; set => _commandMode = value.ToUpper(); }
 
         private IAsk ServiceAsk;
+        private CommandUser CommandUser;
 
         public bool IsCommandAlphabetCorrect
         {
-            get => Command._commandAlphabetAccept.ContainsKey(CommandAlphabet);
+            get => Command._commandAlphabetAccept.ContainsKey(CommandUser.CommandAlphabet);
         }
         public bool IsCommandModeCorrect
         {
-            get => Command._commandModeAccept.Contains(CommandMode);
+            get => Command._commandModeAccept.Contains(CommandUser.CommandMode);
         }
         public string NameAlphabet
         {
-            get => Command._commandAlphabetAccept[CommandAlphabet];
+            get => Command._commandAlphabetAccept[CommandUser.CommandAlphabet];
         }
-        private List<KeyValuePair<string, string>> DictionaryAlphabet
+        private IReadOnlyList<KeyValuePair<string, string>> DictionaryAlphabet
         {
-            get => CommandAlphabet switch { "H" => HiraganaToRomaji.Dic, "K" => katakanaToRomaji.Dic, _ => throw new InvalidOperationException("Alphabet no valid") };
+            get => CommandUser.CommandAlphabet switch { "H" => HiraganaToRomaji.Dic, "K" => katakanaToRomaji.Dic, _ => throw new InvalidOperationException("Alphabet no valid") };
         }
 
         public void CallAskService()
         {
-            switch (_commandMode)
+            switch (CommandUser.CommandMode)
             {
                 case "R": ServiceAsk.GuessRomaji(DictionaryAlphabet); break;
                 case "J": ServiceAsk.GuessJapanAlphabet(DictionaryAlphabet); break;
